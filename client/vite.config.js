@@ -18,15 +18,22 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Split the bundle into smaller cacheable chunks
-        manualChunks: {
-          // React core — changes rarely, stays cached between deploys
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // Chart.js — large library, isolate it so app code changes don't bust its cache
-          'vendor-charts': ['chart.js', 'react-chartjs-2'],
-          // Icon library — large but static
-          'vendor-icons': ['react-icons'],
-          // Small utilities
-          'vendor-utils': ['axios', 'react-hot-toast'],
+        // Vite 8 uses rolldown which requires manualChunks to be a function, not an object
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-router-dom') || id.includes('react-dom') || id.includes('/react/')) {
+              return 'vendor-react';
+            }
+            if (id.includes('chart.js') || id.includes('react-chartjs-2')) {
+              return 'vendor-charts';
+            }
+            if (id.includes('react-icons')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('axios') || id.includes('react-hot-toast')) {
+              return 'vendor-utils';
+            }
+          }
         },
       },
     },
