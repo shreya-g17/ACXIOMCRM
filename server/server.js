@@ -10,7 +10,12 @@ const seedIfEmpty = require('./utils/seedIfEmpty');
 const app = express();
 
 // ── Security & Utility Middleware ───────────────────────────────────────────
-app.use(helmet());
+// Disable CSP and COEP — this is a JSON API server, not an HTML server.
+// CSP for the React frontend is handled via Vercel response headers (vercel.json).
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true, // allow cookies
