@@ -59,12 +59,12 @@ const startServer = async () => {
   });
 };
 
-if (require.main === module) {
-  startServer().catch((err) => {
-    console.error('Unable to start AcxiomCRM API:', err.message);
-    process.exitCode = 1;
-  });
-}
+// if (require.main === module) {
+//   startServer().catch((err) => {
+//     console.error('Unable to start AcxiomCRM API:', err.message);
+//     process.exitCode = 1;
+//   });
+// }
 
 module.exports = app;
-module.exports.startServer = startServer;
+//module.exports.startServer = startServer;
