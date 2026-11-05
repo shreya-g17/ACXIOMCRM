@@ -15,6 +15,20 @@ async function seedIfEmpty() {
     return;
   }
 
+  try {
+    await seedDemoData();
+  } catch (err) {
+    // On serverless, concurrent cold starts can both attempt to seed. The loser
+    // hits a duplicate-key error (11000); treat that as "already seeded".
+    if (err.code === 11000) {
+      console.log('ℹ️  Seed already completed by another instance — skipping.');
+      return;
+    }
+    throw err;
+  }
+}
+
+async function seedDemoData() {
   const admin = await User.create({ fullName: 'System Administrator', email: 'admin@acxiomcrm.com', password: 'Admin@123', role: 'Admin', department: 'IT' });
   const manager = await User.create({ fullName: 'Sales Manager', email: 'manager@acxiomcrm.com', password: 'Manager@123', role: 'Manager', department: 'Sales' });
   const sales = await User.create({ fullName: 'Priya Sharma', email: 'sales@acxiomcrm.com', password: 'Sales@123', role: 'Sales Executive', department: 'Sales' });

@@ -42,6 +42,12 @@ app.use(async (req, res, next) => {
     if (!process.env.MONGO_URI) {
       return res.status(500).json({ success: false, message: 'MONGO_URI is not configured.' });
     }
+    if (/[<>]/.test(process.env.MONGO_URI)) {
+      return res.status(500).json({
+        success: false,
+        message: 'MONGO_URI still contains a placeholder (e.g. <db_password>). Set the real MongoDB password in the deployment environment variables.',
+      });
+    }
     if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
       return res.status(500).json({ success: false, message: 'JWT_SECRET is not configured.' });
     }
@@ -50,8 +56,12 @@ app.use(async (req, res, next) => {
     initialized = true;
     next();
   } catch (err) {
-    console.error('Initialization error:', err.message);
-    res.status(500).json({ success: false, message: 'Server initialization failed.' });
+    console.error('Initialization error:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server initialization failed.',
+      detail: err.message,
+    });
   }
 });
 
