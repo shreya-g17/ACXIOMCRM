@@ -1,11 +1,27 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist",
-  "installCommand": "npm install --prefix backend",
+  "services": {
+    "frontend": {
+      "root": "client/",
+      "framework": "vite"
+    },
+    "backend": {
+      "root": "server/",
+      "entrypoint": "server.js",
+      "framework": "express"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }
