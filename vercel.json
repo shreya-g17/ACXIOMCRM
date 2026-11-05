@@ -19,11 +19,12 @@
       "dest": "/server/api/index.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/(.+\\.[a-zA-Z0-9]+)$",
+      "dest": "/client/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/client/index.html"
     }
   ],
   "headers": [

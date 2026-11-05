@@ -16,8 +16,15 @@ app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
+const allowedOrigin = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin(origin, callback) {
+    if (!origin || origin.replace(/\/$/, '') === allowedOrigin) {
+      callback(null, true);
+      return;
+    }
+    callback(null, false);
+  },
   credentials: true, // allow cookies
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
